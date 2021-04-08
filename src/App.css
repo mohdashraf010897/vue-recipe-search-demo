@@ -1,0 +1,95 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.layout {
+  min-height: 100vh !important;
+  padding: 3rem;
+}
+
+.filter-row {
+  padding-top: 70px;
+}
+.result-time-status {
+  z-index: 1;
+  font-size: 1rem;
+  font-style: italic;
+}
+.result-time-status p {
+  margin-bottom: 0;
+}
+.result-row {
+  padding-top: 70px;
+}
+
+.isIngredientHidden {
+  display: none !important;
+}
+
+@media screen and (max-width: 600px) {
+  .layout {
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .filter-row {
+    padding-top: 17px;
+  }
+  .result-time-status {
+    padding-top: 25px;
+  }
+  .result-row {
+    padding-top: 25px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .result-time-status {
+    padding-top: 25px;
+  }
+}
+
+.search-icon {
+  fill: black !important;
+}
+.filter-container {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 10px;
+}
