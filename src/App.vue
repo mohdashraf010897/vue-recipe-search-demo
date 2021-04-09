@@ -29,8 +29,8 @@
           <a-row :gutter="24" justify="center" type="flex">
             <a-col :xs="20" :sm="20" :md="24" :lg="16" :xl="16">
               <search-box
-                :clearFiltersOnQueryChange="true"
                 id="search-component"
+                :clearFiltersOnQueryChange="true"
                 :dataField="[
                   { field: 'title', weight: 5 },
                   { field: 'title.search', weight: 1 },
@@ -92,8 +92,8 @@
                 {{ showFilterOptions ? "Hide" : "Show" }} Filters
               </a-button>
               <search-box
-                :clearFiltersOnQueryChange="true"
                 id="filter-search-component"
+                :clearFiltersOnQueryChange="true"
                 :dataField="[
                   {
                     field: 'NER.keyword',
