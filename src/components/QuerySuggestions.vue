@@ -3,6 +3,7 @@
     <span style="margin:0 5px">Try:</span>
     <template v-for="(item, index) in STATIC_RECIPE_SUGGESTIONS">
       <a-tag
+        @click="setQueryValue(item.value)"
         :color="item.tagColor"
         :key="index"
         :style="{ cursor: 'pointer' }"
@@ -14,6 +15,14 @@
 
 <script>
 export default {
+  inject: ["searchbase"],
+  methods: {
+    setQueryValue(itemName) {
+      this.searchbase["_components"]["search-component"].setValue(itemName, {
+        triggerCustomQuery: true,
+      });
+    },
+  },
   data() {
     return {
       STATIC_RECIPE_SUGGESTIONS: [
@@ -28,6 +37,9 @@ export default {
         { value: "Saute", tagColor: "cyan" },
       ],
     };
+  },
+  mounted() {
+    console.log("HIHIHI", this.searchbase);
   },
 };
 </script>
