@@ -1,14 +1,19 @@
 <template>
-  <div
-    ref="intersection-ref"
-    :style="{
-      height: '100px',
-      margin: '30px',
-      padding: '50px',
-    }"
-  >
-    <a-spin :spinning="isSpinning" size="large" tip="Fetching Results"></a-spin>
-  </div>
+  <a-row style="width:100%" type="flex" justify="center">
+    <div
+      ref="intersection-ref"
+      :style="{
+        height: '100px',
+        margin: '30px',
+        padding: '50px',
+      }"
+    >
+      <a-spin
+        :spinning="isSpinning"
+        size="large"
+        tip="Fetching Results"
+      ></a-spin></div
+  ></a-row>
 </template>
 
 <script>

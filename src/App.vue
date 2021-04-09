@@ -263,7 +263,7 @@
                         display: 'flex',
                         flexWrap: 'wrap',
                         gridGap: '24px',
-                        maxHeight: '68vh',
+                        maxHeight: '60vh',
                         overflow: 'hidden scroll',
                       }"
                       id="under-observation"
