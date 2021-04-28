@@ -39,9 +39,9 @@
                 ]"
                 title="Search"
                 placeholder="Yummy pasta..."
-                :autosuggest="false"
-                :enablePopularSuggestions="false"
-                :enableRecentSearches="false"
+                :autosuggest="true"
+                :enablePopularSuggestions="true"
+                :enableRecentSearches="true"
                 :size="10"
                 :debounce="100"
                 queryFormat="and"
@@ -268,7 +268,22 @@
                       }"
                       id="under-observation"
                     >
-                      {{ log(props) }}
+                      {{
+                        log(getPromotedResultsArray(props.results.promotedData))
+                      }}
+                      <template v-if="!!props.results.promoted">
+                        <template
+                          v-for="promotedItem in getPromotedResultsArray(
+                            props.results.promotedData
+                          )"
+                        >
+                          <promoted-card-item
+                            :promotedItem="promotedItem"
+                            :key="promotedItem.id"
+                          />
+                        </template>
+                      </template>
+
                       <template
                         v-for="(recipeItem, index) in props.aggregationData
                           .data"
@@ -314,6 +329,7 @@ import {
 } from "@appbaseio/vue-searchbox";
 import "./styles.css";
 import "./App.css";
+import PromotedCardItem from "./components/PromotedCardItem";
 import CardItem from "./components/CardItem.vue";
 import RecipeModal from "./components/RecipeModal.vue";
 import PaginationTrigger from "./components/PaginationTrigger.vue";
@@ -329,7 +345,7 @@ export default {
     RecipeModal,
     PaginationTrigger,
     QuerySuggestions,
-    // Paginate,
+    PromotedCardItem,
   },
   data: function() {
     return {
@@ -347,7 +363,11 @@ export default {
     log(value) {
       console.log(value);
     },
-
+    getPromotedResultsArray(promotedData) {
+      return Array.isArray(promotedData) && promotedData?.length > 0
+        ? promotedData.map((item) => item.doc)
+        : [];
+    },
     getIngredientFilterArr(aggregationData, value) {
       const responseValue = value
         ? value.map((item) => item.toLowerCase())
