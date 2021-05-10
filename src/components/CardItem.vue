@@ -2,19 +2,23 @@
   <a-card
     hoverable
     :style="{ height: '250px', width: '300px' }"
-    :bodyStyle="{ padding: '0' }"
+    :body-style="{ padding: '0' }"
   >
     <div id="card-header">
-      <h3>
-        {{ recipeItem.title.trim().replace(/[()]/g, "") }}
-      </h3>
+        <h3
+        v-html="getTitleInnerHtml(
+      recipeItem
+    )"
+            
+          ></h3>
+   
     </div>
     <div id="card-body">
       <div>
         <template
           v-for="(nerItem, index) in getIngredientIterables(recipeItem.NER)"
         >
-          <span :style="{ textTransform: 'capitalize' }" :key="index">
+          <span :key="index" :style="{ textTransform: 'capitalize' }">
             {{ nerItem }}
             {{ index !== recipeItem.NER.length - 1 ? "," : "" }}
           </span>
@@ -27,7 +31,7 @@
       <a-col span="11">
         <span>
           <img src="./../assets/images/external-link.png" height="25px" />
-          <a href="'https://' + item.link} target='_blank'">
+          <a href="'https://' + item.link} target='_blank'" rel="noreferrer">
             Recipe Origin
           </a>
         </span></a-col
@@ -51,21 +55,30 @@
 
 <script>
 export default {
-  name: "CardItem",
-  props: {
-    recipeItem: Object,
-    setFullRecipe: Function,
-  },
-  methods: {
-    log(item) {
-      console.log(item);
-    },
-    getIngredientIterables(ingredientsArr) {
-      return ingredientsArr
-        ?.filter((item) => item.replace(/[^A-Za-z']/g, "").length > 0)
-        .map((item) => item.replace(/[\u{0080}-\u{FFFF}]/gu, ""));
-    },
-  },
+	name: 'CardItem',
+	props: {
+		recipeItem: {type:Object, default(){return {}}},
+    	/* eslint-disable no-console */
+		setFullRecipe:  {type:Function, default(){return ()=>{console.log('Please provide a function')}}},
+    	/* eslint-enable no-console */
+	},
+	methods: {
+		log(item) {
+      	/* eslint-disable no-console */
+			console.log(item);
+      	/* eslint-enable no-console */
+		},
+		getIngredientIterables(ingredientsArr) {
+			return ingredientsArr
+				?.filter((item) => item.replace(/[^A-Za-z']/g, '').length > 0)
+				.map((item) => item.replace(/[\u{0080}-\u{FFFF}]/gu, ''));
+		},
+		getTitleInnerHtml(
+			source
+		){
+			return source?.title?.trim().replace(/[()]/g, '')
+		}
+	},
 };
 </script>
 

@@ -3,10 +3,11 @@
     <a-layout class="layout">
       <h2>
         Vue Searchbox Demo
-        <span style="font-size:1rem;">
+        <span>
           <a
             href="https://docs.appbase.io/docs/reactivesearch/vue-searchbox/apireference/"
             target="_blank"
+            rel="”noreferrer”"
             >API reference</a
           >
         </span>
@@ -30,7 +31,6 @@
             <a-col :xs="20" :sm="20" :md="24" :lg="16" :xl="16">
               <search-box
                 id="search-component"
-                :clearFiltersOnQueryChange="true"
                 :dataField="[
                   { field: 'title', weight: 5 },
                   { field: 'title.search', weight: 1 },
@@ -52,7 +52,11 @@
                 class="result-search-box"
                 :showDistinctSuggestions="true"
                 iconPosition="left"
-                style="{ paddingBottom: 10 }"
+                style="
+                   {
+                    paddingbottom: 10;
+                  }
+                "
               />
               <query-suggestions />
             </a-col>
@@ -69,31 +73,21 @@
               :md="24"
               :lg="6"
               :xl="6"
-              :style="
-                isMobileView &&
-                  showFilterOptions && {
-                    position: 'fixed',
-                    zIndex: 2,
-                    background: 'rgba(255 ,255, 255 , .9)',
-                    height: '100vh',
-                    top: 0,
-                    width: '100vw',
-                    maxWidth: '100%',
-                    paddingTop: '20px',
-                    overflowY: 'scroll',
-                  }
+              :class="
+                isMobileView && showFilterOptions
+                  ? 'show-ingredients-full-screen'
+                  : ''
               "
             >
               <a-button
                 v-if="isMobileView"
-                :style="{ marginBottom: '10px' }"
-                v-on:click="() => (showFilterOptions = !showFilterOptions)"
+                class="filter-reveal-cta"
+                @click="() => (showFilterOptions = !showFilterOptions)"
               >
                 {{ showFilterOptions ? "Hide" : "Show" }} Filters
               </a-button>
               <search-box
                 id="filter-search-component"
-                :clearFiltersOnQueryChange="true"
                 :dataField="[
                   {
                     field: 'NER.keyword',
@@ -119,107 +113,41 @@
               <search-component
                 id="ingredient-filter"
                 dataField="NER.keyword"
-                :value="[]"
                 type="term"
                 queryFormat="and"
                 :highlight="true"
-                :URLParams="true"
                 :aggregationSize="30"
-                :subscribeTo="['aggregationData', 'requestStatus', 'value']"
+                :subscribe-to="['aggregationData', 'requestStatus', 'value']"
                 :react="{
                   and: ['search-component', 'filter-search-component'],
                 }"
               >
                 <div
+                  slot-scope="{ aggregationData, loading, value, setValue }"
                   :class="{
-                    'filter-container': true,
                     isIngredientHidden: !showFilterOptions && isMobileView,
                   }"
-                  slot-scope="{ aggregationData, loading, value, setValue }"
                 >
-                  <a-row
-                    v-if="loading"
-                    justify="center"
-                    type="flex"
-                    :gutter="[24, 24]"
-                    :style="{ width: '100%', height: '200px' }"
-                    ><a-col span="24">
-                      <a-spin :spinning="loading" size="large"></a-spin> </a-col
-                  ></a-row>
-                  <template v-if="!loading">
-                    <template
-                      v-for="(item, index) in getIngredientFilterArr(
-                        aggregationData,
-                        value
-                      )"
-                    >
-                      <a-checkable-tag
-                        :key="index"
-                        :checked="value ? value.includes(item._key) : false"
-                        :style="[
-                          {
-                            cursor: 'pointer',
-                            width: 'max-content',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gridGap: '6px',
-                            textTransform: 'capitalize',
-                            fontSize: '13px',
-                            fontWeight: '600',
-                            borderColor: 'rgb(90,183,148)',
-                            ...(false && {
-                              backgroundColor: '#fff',
-                            }),
-                          },
-                        ]"
-                        @change="
-                          (checked) =>
-                            handleFilterToggle(
-                              checked,
-                              value,
-                              setValue,
-                              item._key
-                            )
-                        "
-                      >
-                        <a-icon v-if="!item.isChecked" type="plus-circle" />
-                        <a-icon v-if="item.isChecked" type="minus-circle" />
-                        {{ item._key }} ({{
-                          new Intl.NumberFormat("en-US", {
-                            maximumSignificantDigits: 3,
-                          }).format(item._doc_count)
-                        }})</a-checkable-tag
-                      ></template
-                    >
-                    <a-col span="24">
-                      <a-button
-                        v-if="!isMobileView"
-                        type="primary"
-                        @click="showAllFilters = !showAllFilters"
-                        :style="{ fontWeight: 'bold' }"
-                        >Show {{ showAllFilters ? "Less" : "More" }}
-                      </a-button>
-                    </a-col>
-                  </template>
+                <!-- ingredient filter facet component -->
+               <filters-renderer :isMobileView="isMobileView" :aggregationData="aggregationData" :loading="loading" :value="value" :setValue="setValue"/>
                 </div>
               </search-component>
             </a-col>
             <a-col :xs="20" :sm="24" :md="24" :lg="18" :xl="18">
               <search-component
                 id="result-component"
-                :defaultQuery="
+                :default-query="
                   () => {
                     return { track_total_hits: true };
                   }
                 "
                 :dataField="'title'"
-                :aggregationField="'title.keyword'"
+                :distinctField="'title.keyword'"
                 queryFormat="and"
                 :highlight="true"
-                :URLParams="true"
                 :size="10"
                 :aggregationSize="10"
-                :subscribeTo="['aggregationData', 'requestStatus', 'value']"
+                :subscribeTo="['requestStatus']"
                 :react="{
                   and: ['search-component', 'ingredient-filter'],
                 }"
@@ -227,84 +155,8 @@
                 :pagination="true"
               >
                 <div slot-scope="props">
-                  <a-spin :spinning="props.loading" size="large">
-                    <!-- empty or no results -->
-                    <a-empty
-                      v-if="props.aggregationData.data.length <= 0"
-                      description=""
-                      >{{
-                        props.loading ? "Fetching Data!" : "No Results Found!"
-                      }}</a-empty
-                    >
-
-                    <!-- renderResults -->
-                    <a-col span="24">
-                      <p>
-                        <strong :style="{ color: 'red' }">
-                          {{
-                            new Intl.NumberFormat("en-US", {
-                              maximumSignificantDigits: 3,
-                            }).format(props.results.numberOfResults)
-                          }}
-                        </strong>
-                        results found in
-                        <strong :style="{ color: 'red' }">
-                          {{
-                            typeof props.results.time == "object"
-                              ? props.results.time.took
-                              : props.results.time
-                          }}
-                        </strong>
-                        ms
-                      </p></a-col
-                    >
-                    <a-col
-                      :style="{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gridGap: '24px',
-                        maxHeight: '60vh',
-                        overflow: 'hidden scroll',
-                      }"
-                      id="under-observation"
-                    >
-                      {{
-                        log(getPromotedResultsArray(props.results.promotedData))
-                      }}
-                      <template v-if="!!props.results.promoted">
-                        <template
-                          v-for="promotedItem in getPromotedResultsArray(
-                            props.results.promotedData
-                          )"
-                        >
-                          <promoted-card-item
-                            :promotedItem="promotedItem"
-                            :key="promotedItem.id"
-                          />
-                        </template>
-                      </template>
-
-                      <template
-                        v-for="(recipeItem, index) in props.aggregationData
-                          .data"
-                      >
-                        <card-item
-                          :recipeItem="recipeItem.hits.hits[0]._source"
-                          :key="index"
-                          :setFullRecipe="setFullRecipe"
-                        />
-                      </template>
-
-                      <pagination-trigger
-                        :isSpinning="
-                          props.loading && props.aggregationData.data.length > 0
-                        "
-                        :scrollToTop="!props.after"
-                        :afterKey="props.aggregationData.afterKey"
-                        :setAfter="props.setAfter"
-                      />
-                    </a-col>
-                  </a-spin>
+                  <results-renderer :from="props.from" :setFrom="props.setFrom"  :size="props.size" :results="props.results" :loading="props.loading" />
+                
                 </div>
               </search-component>
             </a-col>
@@ -313,9 +165,9 @@
       </search-base>
     </a-layout>
     <recipe-modal
-      :recipeItem="recipeItemUnderObservation"
+      :recipe-item="recipeItemUnderObservation"
       :visible="isRecipeModalVisible"
-      :setFullRecipe="setFullRecipe"
+      :set-full-recipe="setFullRecipe"
     />
   </div>
 </template>
@@ -323,110 +175,68 @@
 <script>
 // import Paginate from "vuejs-paginate";
 import {
-  SearchBase,
-  SearchComponent,
-  SearchBox,
-} from "@appbaseio/vue-searchbox";
-import "./styles.css";
-import "./App.css";
-import PromotedCardItem from "./components/PromotedCardItem";
-import CardItem from "./components/CardItem.vue";
-import RecipeModal from "./components/RecipeModal.vue";
-import PaginationTrigger from "./components/PaginationTrigger.vue";
-import QuerySuggestions from "./components/QuerySuggestions.vue";
+	SearchBase,
+	SearchComponent,
+	SearchBox,
+} from '@appbaseio/vue-searchbox';
+import './styles.css';
+import './App.css';
+import RecipeModal from './components/RecipeModal.vue';
+import QuerySuggestions from './components/QuerySuggestions.vue';
+import FiltersRenderer from './components/FiltersRenderer.vue';
+import ResultsRenderer from './components/ResultsRenderer.vue';
 
 export default {
-  name: "app",
-  components: {
-    SearchBase,
-    SearchBox,
-    SearchComponent,
-    CardItem,
-    RecipeModal,
-    PaginationTrigger,
-    QuerySuggestions,
-    PromotedCardItem,
-  },
-  data: function() {
-    return {
-      index: process.env.VUE_APP_APPBASE_APP_NAME,
-      credentials: process.env.VUE_APP_APPBASE_APP_CREDENTIALS,
-      url: process.env.VUE_APP_APPBASE_URL,
-      isMobileView: false,
-      showAllFilters: false,
-      showFilterOptions: false,
-      recipeItemUnderObservation: {},
-      isRecipeModalVisible: false,
-    };
-  },
-  methods: {
-    log(value) {
-      console.log(value);
-    },
-    getPromotedResultsArray(promotedData) {
-      return Array.isArray(promotedData) && promotedData?.length > 0
-        ? promotedData.map((item) => item.doc)
-        : [];
-    },
-    getIngredientFilterArr(aggregationData, value) {
-      const responseValue = value
-        ? value.map((item) => item.toLowerCase())
-        : [];
-      const sortedFilters = [];
-      aggregationData?.data?.map((item) => {
-        if (!responseValue.includes(item._key.toLowerCase())) {
-          sortedFilters.push(item);
-        } else {
-          sortedFilters.unshift({ isChecked: true, ...item });
-        }
-      });
+	name: 'App',
+	components: {
+		SearchBase,
+		SearchBox,
+		SearchComponent,
+		RecipeModal,
+		QuerySuggestions,FiltersRenderer,ResultsRenderer
+	},
+	data() {
+		return {
+			index: process.env.VUE_APP_APPBASE_APP_NAME,
+			credentials: process.env.VUE_APP_APPBASE_APP_CREDENTIALS,
+			url: process.env.VUE_APP_APPBASE_URL,
+			isMobileView: false,
+			showFilterOptions: false,
+			recipeItemUnderObservation: {},
+			isRecipeModalVisible: false,
+		};
+	},
+	created() {
+		if (window?.innerWidth <= 600) {
+			!this.isMobileView && (this.isMobileView = true);
+		}
 
-      return sortedFilters.slice(
-        0,
-        Math.max(
-          7,
-          this.showAllFilters || this.isMobileView ? sortedFilters.length : 7
-        )
-      );
-    },
-    handleFilterToggle(checked, value, setValue, itemKey) {
-      let values = value || [];
-      if (!checked) {
-        values = [...values.filter((valueItem) => valueItem != itemKey)];
-      } else {
-        values.push(itemKey);
-      }
-      // Set filter value and trigger custom query
-      setValue(values, {
-        triggerDefaultQuery: false,
-        triggerCustomQuery: true,
-        stateChanges: true,
-      });
-    },
-    windowResizeHandler() {
-      if (window?.innerWidth <= 600) {
-        !this.isMobileView && (this.isMobileView = true);
-      } else {
-        this.isMobileView && (this.isMobileView = false);
-      }
-    },
-    setFullRecipe(recipeItem) {
-      console.log(recipeItem);
-      this.recipeItemUnderObservation = recipeItem;
-      this.isRecipeModalVisible =
-        !!recipeItem || Object.entries(recipeItem).length > 0;
-    },
-  },
-  created: function() {
-    if (window?.innerWidth <= 600) {
-      !this.isMobileView && (this.isMobileView = true);
-    }
-
-    window.addEventListener("resize", this.windowResizeHandler);
-  },
-  destroyed: function() {
-    window.removeEventListener("resize", this.windowResizeHandler);
-  },
+		window.addEventListener('resize', this.windowResizeHandler);
+	},
+	destroyed() {
+		window.removeEventListener('resize', this.windowResizeHandler);
+	},
+	methods: {
+		log(value) {
+			/* eslint-disable no-console */
+			console.log(value);
+			/* eslint-enable no-console */
+		},
+	
+		
+		windowResizeHandler() {
+			if (window?.innerWidth <= 600) {
+				!this.isMobileView && (this.isMobileView = true);
+			} else {
+				this.isMobileView && (this.isMobileView = false);
+			}
+		},
+		setFullRecipe(recipeItem) {
+			this.recipeItemUnderObservation = recipeItem;
+			this.isRecipeModalVisible
+        = !!recipeItem || Object.entries(recipeItem).length > 0;
+		},
+	},
 };
 </script>
 
@@ -438,4 +248,26 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
+.layout h2 > span {
+  font-size: 1rem;
+}
+
+.show-ingredients-full-screen {
+  position: fixed !important;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.9);
+  height: 100vh;
+  top: 0;
+  width: 100vw !important;
+  max-width: 100%;
+  padding-top: 20px !important;
+  overflow-y: scroll;
+}
+
+.filter-reveal-cta.ant-btn {
+  margin-bottom: 10px;
+}
+
+
 </style>

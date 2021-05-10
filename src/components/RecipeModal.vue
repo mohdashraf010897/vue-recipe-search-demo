@@ -32,7 +32,10 @@
           <a-col span="11">
             <span>
               <img src="./../assets/images/external-link.png" height="25px" />
-              <a href="'https://' + item.link} target='_blank'">
+              <a
+                href="'https://' + item.link} target='_blank'"
+                rel="noreferrer"
+              >
                 Recipe Origin
               </a>
             </span></a-col
@@ -45,25 +48,25 @@
 
 <script>
 export default {
-  name: "RecipeModal",
-  props: {
-    recipeItem: Object,
-    setFullRecipe: Function,
-    visible: Boolean,
-  },
-  methods: {
-    log(item) {
-      console.log(item);
-    },
-    getIngredientIterables(ingredientsArr) {
-      return ingredientsArr?.filter(
-        (item) => item.replace(/[^A-Za-z']/g, "").length > 0
-      );
-    },
-    onClose() {
-      this.setFullRecipe({});
-    },
-  },
+	name: 'RecipeModal',
+	props: {
+		recipeItem: Object,
+		setFullRecipe: Function,
+		visible: Boolean,
+	},
+	methods: {
+		log(item) {
+			console.log(item);
+		},
+		getIngredientIterables(ingredientsArr) {
+			return ingredientsArr?.filter(
+				(item) => item.replace(/[^A-Za-z']/g, '').length > 0
+			);
+		},
+		onClose() {
+			this.setFullRecipe({});
+		},
+	},
 };
 </script>
 

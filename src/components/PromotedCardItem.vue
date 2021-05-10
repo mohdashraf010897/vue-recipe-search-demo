@@ -6,7 +6,7 @@
       border: ' 1px solid #cf1421',
       borderRadius: '5px',
     }"
-    :bodyStyle="{ padding: '10px 10px 0' }"
+    :body-style="{ padding: '10px 10px 0' }"
   >
     <a-row
       type="flex"
@@ -68,7 +68,7 @@
       ><span>
         Sponsored by :
         <a-tooltip title="See Full Recipe!">
-          <a :href="promotedItem.link" target="_blank">
+          <a :href="promotedItem.link" target="_blank" rel="noreferrer">
             {{ getHostname(promotedItem.link) }}
           </a>
         </a-tooltip>
@@ -80,25 +80,25 @@
 
 <script>
 export default {
-  name: "PromotedCardItem",
-  props: {
-    promotedItem: Object,
-  },
-  methods: {
-    log(promotedItem) {
-      console.log(promotedItem);
-    },
-    getHostname(url) {
-      let urlLocal = url,
-        tempProtocol = "";
-      // use URL constructor and return hostname
-      if (urlLocal.indexOf("://") == -1) {
-        tempProtocol = "https://";
-        urlLocal = tempProtocol + urlLocal;
-      }
-      return new URL(urlLocal).hostname.split(".")[1];
-    },
-  },
+	name: 'PromotedCardItem',
+	props: {
+		promotedItem: {type:Object, default(){return {}}},
+	},
+	methods: {
+		log(promotedItem) {
+			console.log(promotedItem);
+		},
+		getHostname(url) {
+			let urlLocal = url;
+			let tempProtocol = '';
+			// use URL constructor and return hostname
+			if (urlLocal.indexOf('://') == -1) {
+				tempProtocol = 'https://';
+				urlLocal = tempProtocol + urlLocal;
+			}
+			return new URL(urlLocal).hostname.split('.')[1];
+		},
+	},
 };
 </script>
 
