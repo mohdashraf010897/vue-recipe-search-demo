@@ -1,24 +1,14 @@
 <template>
-  <a-card
-    hoverable
-    :style="{ height: '250px', width: '300px' }"
-    :body-style="{ padding: '0' }"
-  >
+  <a-card hoverable class="card-item">
     <div id="card-header">
-        <h3
-        v-html="getTitleInnerHtml(
-      recipeItem
-    )"
-            
-          ></h3>
-   
+      <h3 v-html="getTitleInnerHtml(recipeItem)"></h3>
     </div>
     <div id="card-body">
       <div>
         <template
           v-for="(nerItem, index) in getIngredientIterables(recipeItem.NER)"
         >
-          <span :key="index" :style="{ textTransform: 'capitalize' }">
+          <span :key="index" >
             {{ nerItem }}
             {{ index !== recipeItem.NER.length - 1 ? "," : "" }}
           </span>
@@ -57,33 +47,51 @@
 export default {
 	name: 'CardItem',
 	props: {
-		recipeItem: {type:Object, default(){return {}}},
-    	/* eslint-disable no-console */
-		setFullRecipe:  {type:Function, default(){return ()=>{console.log('Please provide a function')}}},
-    	/* eslint-enable no-console */
+		recipeItem: {
+			type: Object,
+			default() {
+				return {};
+			},
+		},
+		/* eslint-disable no-console */
+		setFullRecipe: {
+			type: Function,
+			default() {
+				return () => {
+					console.log('Please provide a function');
+				};
+			},
+		},
+		/* eslint-enable no-console */
 	},
 	methods: {
 		log(item) {
-      	/* eslint-disable no-console */
+			/* eslint-disable no-console */
 			console.log(item);
-      	/* eslint-enable no-console */
+			/* eslint-enable no-console */
 		},
 		getIngredientIterables(ingredientsArr) {
 			return ingredientsArr
 				?.filter((item) => item.replace(/[^A-Za-z']/g, '').length > 0)
 				.map((item) => item.replace(/[\u{0080}-\u{FFFF}]/gu, ''));
 		},
-		getTitleInnerHtml(
-			source
-		){
-			return source?.title?.trim().replace(/[()]/g, '')
-		}
+		getTitleInnerHtml(source) {
+			return source?.title?.trim().replace(/[()]/g, '');
+		},
 	},
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.card-item {
+  height: 250px;
+  width: 300px;
+}
+
+.card-item .antd-card-body{
+ padding: 0;
+}
 #card-header {
   height: 72px;
   width: 100%;
@@ -122,10 +130,11 @@ export default {
   overflow: hidden;
   white-space: nowrap;
 }
-#card-body > div * span {
+#card-body > div span {
   display: "flex";
   align-items: "center";
   grid-gap: "4px";
+  text-transform: capitalize;
 }
 #card-footer {
   height: calc(250px - 120px - 72px);

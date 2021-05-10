@@ -1,11 +1,10 @@
 <template>
-  <a-row type="flex" :style="{ rowGap: '10px', marginTop: '1rem' }">
-    <span style="margin:0 5px">Try:</span>
+  <a-row type="flex" class="query-suggestions">
+    <span >Try:</span>
     <template v-for="(item, index) in STATIC_RECIPE_SUGGESTIONS">
       <a-tag
         :key="index"
         :color="item.tagColor"
-        :style="{ cursor: 'pointer' }"
         @click="setQueryValue(item.value)"
         >{{ item.value }}</a-tag
       >
@@ -31,9 +30,6 @@ export default {
 			],
 		};
 	},
-	mounted() {
-		console.log('HIHIHI', this.searchbase);
-	},
 	methods: {
 		setQueryValue(itemName) {
 			this.searchbase._components['search-component'].setValue(itemName, {
@@ -44,4 +40,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.query-suggestions{
+	row-gap: 10px;
+    margin-top: 1rem;
+}
+
+.query-suggestions >span{margin: 0 5px;}
+
+.query-suggestions .ant-tag{cursor: pointer;}
+
+</style>

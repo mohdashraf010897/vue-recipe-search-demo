@@ -1,13 +1,6 @@
 <template>
-  <a-row style="width:100%" type="flex" justify="center">
-    <div
-      ref="intersection-ref"
-      :style="{
-        height: '100px',
-        margin: '30px',
-        padding: '50px',
-      }"
-    >
+  <a-row class="load-more-style" type="flex" justify="center">
+    <div ref="intersection-ref" >
       <a-spin
         :spinning="isSpinning"
         size="large"
@@ -19,7 +12,7 @@
 <script>
 export default {
 	props: {
-		isSpinning: {type:Boolean, default: false },
+		isSpinning: { type: Boolean, default: false },
 		options: {
 			type: Object,
 			default() {
@@ -28,13 +21,16 @@ export default {
 					threshold: '1',
 				};
 			},
-		},/* eslint-disable no-console */
-		callNextPage: { type: Function ,default() {
-			return () => {
-				console.log('Please provide a function');
-			};
-		}},/* eslint-enable no-console */
-		scrollToTop: { type:Boolean,default: false },
+		} /* eslint-disable no-console */,
+		callNextPage: {
+			type: Function,
+			default() {
+				return () => {
+					console.log('Please provide a function');
+				};
+			},
+		} /* eslint-enable no-console */,
+		scrollToTop: { type: Boolean, default: false },
 	},
 	data() {
 		return {
@@ -60,8 +56,8 @@ export default {
 		handleIntersect(entry) {
 			if (entry.isIntersecting) {
 				/* eslint-disable no-console */
-				
-				console.log('hi')
+
+				console.log('hi');
 				/* eslint-enable no-console */
 				if (this.isSpinning) return;
 				this.callNextPage();
@@ -72,4 +68,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.load-more-style {
+	width: 100%;
+ 
+}
+
+.load-more-style >div{ height: 100px;
+  margin: 30px;
+  padding: 50px;}
+</style>

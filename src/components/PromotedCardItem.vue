@@ -1,57 +1,17 @@
 <template>
   <a-card
     hoverable
-    :style="{
-      width: '100%',
-      border: ' 1px solid #cf1421',
-      borderRadius: '5px',
-    }"
+    class="promoted-card"
     :body-style="{ padding: '10px 10px 0' }"
   >
-    <a-row
-      type="flex"
-      justify="space-between"
-      align="middle"
-      :style="{ minHeight: '40px', flexWrap: 'wrap', gridGap: '10px', flex: 1 }"
-    >
-      <h3
-        :style="{
-          height: 'auto',
-          whiteSpace: 'pre-wrap',
-          marginBottom: '0px',
-          lineHeight: '15px',
-          fontSize: '14px',
-          color: '#ff7f7f',
-          display: 'flex',
-          alignItems: 'center',
-          gridGap: '7px',
-          textAlign: 'left',
-        }"
-      >
+    <a-row type="flex" justify="space-between" align="middle">
+      <h3>
         <img
-          :style="{
-            transform: 'rotate(-25deg)',
-            height: '30px',
-            position: 'relative',
-            top: '1px',
-          }"
           src="https://img.icons8.com/emoji/48/000000/speaker-medium-volume.png"
         />
         <span>{{ promotedItem.title.trim().replace(/[()]/g, "") }}</span>
       </h3>
-      <a-tag
-        :color="'red'"
-        :style="{
-          fontSize: '14px',
-          textTransform: 'uppercase',
-          fontWeight: '600',
-          borderRadius: '40px',
-          padding: '2px 8px',
-          lineHeight: 'unset',
-          marginRight: 0,
-        }"
-        >Promoted</a-tag
-      >
+      <a-tag :color="'red'">Promoted</a-tag>
     </a-row>
 
     <!-- footer -->
@@ -59,12 +19,6 @@
       type="flex"
       justify="space-between"
       align="bottom"
-      :style="{
-        padding: '10px 0',
-        textAlign: 'left',
-        lineHeight: '15px',
-        flexWrap: 'nowrap',
-      }"
       ><span>
         Sponsored by :
         <a-tooltip title="See Full Recipe!">
@@ -82,17 +36,19 @@
 export default {
 	name: 'PromotedCardItem',
 	props: {
-		promotedItem: {type:Object, default(){return {}}},
+		promotedItem: {
+			type: Object,
+			default() {
+				return {};
+			},
+		},
 	},
 	methods: {
-		log(promotedItem) {
-			console.log(promotedItem);
-		},
 		getHostname(url) {
 			let urlLocal = url;
 			let tempProtocol = '';
 			// use URL constructor and return hostname
-			if (urlLocal.indexOf('://') == -1) {
+			if (urlLocal.indexOf('://') === -1) {
 				tempProtocol = 'https://';
 				urlLocal = tempProtocol + urlLocal;
 			}
@@ -109,5 +65,58 @@ i {
 }
 a {
   color: #42b983;
+}
+
+.promoted-card {
+  width: 100%;
+  border: 1px solid rgb(207, 20, 33);
+  border-radius: 5px;
+}
+
+.promoted-card > div.ant-card-body > div.ant-row-flex:first-of-type {
+  min-height: 40px;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1 1 0%;
+}
+
+.promoted-card > div.ant-card-body > div.ant-row-flex:first-of-type > h3 {
+  height: auto;
+  white-space: pre-wrap;
+  margin-bottom: 0px;
+  line-height: 15px;
+  font-size: 14px;
+  color: rgb(255, 127, 127);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-align: left;
+}
+
+.promoted-card > div.ant-card-body > div.ant-row-flex:first-of-type > h3 > img {
+  transform: rotate(-25deg);
+  height: 30px;
+  position: relative;
+  top: 1px;
+}
+
+.promoted-card
+  > div.ant-card-body
+  > div.ant-row-flex:first-of-type
+  span.ant-tag-red {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 40px;
+  padding: 2px 8px;
+  line-height: unset;
+  margin-right: 0px;
+}
+
+.promoted-card > div.ant-card-body > div.ant-row-flex:nth-of-type(2) {
+  padding: 10px 0px;
+  text-align: left;
+  line-height: 15px;
+  flex-wrap: nowrap;
 }
 </style>
